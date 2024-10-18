@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 
 namespace Async
 {
@@ -6,8 +7,14 @@ namespace Async
     {
         static async Task Main(string[] args)
         {
-            string jsonData = await FetchData();
-            Console.WriteLine(jsonData);
+            var person = new Person {Name = "Joakim", Age = 37 };
+            string jsonString = JsonSerializer.Serialize(person);
+            Console.WriteLine(jsonString);
+            Person deserializePerson = JsonSerializer.Deserialize<Person>(jsonString);
+            Console.WriteLine(deserializePerson.Name + " " + deserializePerson.Age);
+
+            /*string jsonData = await FetchData();
+            Console.WriteLine(jsonData);*/
 
             /*Task<string> slowDog = SlowDogAsync();
             Task<string> fastDog = FastDogAsync();
@@ -85,3 +92,10 @@ namespace Async
         }
     }
 }
+
+public class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+
