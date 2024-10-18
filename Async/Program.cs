@@ -1,10 +1,15 @@
-﻿namespace Async
+﻿using System;
+
+namespace Async
 {
     internal class Program
     {
         static async Task Main(string[] args)
         {
-            Task<string> slowDog = SlowDogAsync();
+            string jsonData = await FetchData();
+            Console.WriteLine(jsonData);
+
+            /*Task<string> slowDog = SlowDogAsync();
             Task<string> fastDog = FastDogAsync();
 
             string slowDogResult = await slowDog;
@@ -17,9 +22,32 @@
             ShortProcess();
 
             Task<int> result = AnotherLongProcess();
-            Console.WriteLine($"Result: {await result}");
+            Console.WriteLine($"Result: {await result}");*/
 
             Console.ReadLine();
+        }
+
+        static async Task<string> FetchData()
+        {
+            using var client = new HttpClient();
+
+            try
+            {
+                var url = "https://jsonplaceholder.typicode.com/users";
+                //using HttpResponseMessage response = await client.GetAsync(url);
+                //string responseBody = await response.Content.ReadAsStringAsync();
+                string response = await client.GetStringAsync(url);
+
+                return response;
+            }
+            catch(HttpRequestException ex)
+            {
+                return $"Http: {ex}";
+            }
+            catch (Exception ex)
+            {
+                return $"Ex: {ex}";
+            }
         }
 
         static async Task<string> SlowDogAsync()
